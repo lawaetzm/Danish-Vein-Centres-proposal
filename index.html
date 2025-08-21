@@ -187,25 +187,79 @@
                 box-shadow: none !important;
                 border: 1px solid #ddd;
                 page-break-inside: avoid;
+                page-break-before: auto;
+                page-break-after: auto;
                 margin-bottom: 20px;
+                padding: 30px;
             }
             
-            .vision-card, .offering-card {
+            .goal-timeline {
+                page-break-inside: avoid;
+            }
+            
+            .timeline-item {
+                page-break-inside: avoid;
+                margin-bottom: 15px;
+            }
+            
+            .vision-grid {
+                page-break-inside: avoid;
+            }
+            
+            .vision-card {
                 box-shadow: none !important;
                 border: 1px solid #ddd;
                 background: white !important;
+                page-break-inside: avoid;
+                margin-bottom: 10px;
+            }
+            
+            .offering-card {
+                box-shadow: none !important;
+                border: 1px solid #ddd;
+                background: white !important;
+                page-break-inside: avoid;
+                margin-bottom: 10px;
             }
             
             .stats-container {
                 background: white !important;
                 color: black !important;
                 border: 1px solid #ddd;
+                page-break-inside: avoid;
             }
             
             .contact-info {
                 background: white !important;
                 color: black !important;
                 border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+            
+            /* Ensure each major section starts on new page if needed */
+            #vision {
+                page-break-before: auto;
+            }
+            
+            #maal {
+                page-break-before: always;
+            }
+            
+            #tilbud {
+                page-break-before: always;
+            }
+            
+            #aspekter {
+                page-break-before: always;
+            }
+            
+            #kontakt {
+                page-break-before: always;
+            }
+            
+            /* Keep list items together */
+            ul li {
+                page-break-inside: avoid;
             }
         }
 
