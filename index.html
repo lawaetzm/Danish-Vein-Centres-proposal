@@ -168,50 +168,56 @@
             animation: fadeInUp 1s ease-out 0.3s both;
         }
 
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50px;
-            padding: 5px;
-            backdrop-filter: blur(10px);
-        }
-
-        .tab-button {
-            background: transparent;
-            border: none;
-            padding: 15px 30px;
-            color: white;
-            cursor: pointer;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            margin: 0 5px;
-        }
-
-        .tab-button:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        .tab-button.active {
-            background: white;
-            color: #667eea;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        /* Print-friendly styles */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            
+            .login-screen {
+                display: none !important;
+            }
+            
+            .logout-button {
+                display: none !important;
+            }
+            
+            .content-section {
+                box-shadow: none !important;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+                margin-bottom: 20px;
+            }
+            
+            .vision-card, .offering-card {
+                box-shadow: none !important;
+                border: 1px solid #ddd;
+                background: white !important;
+            }
+            
+            .stats-container {
+                background: white !important;
+                color: black !important;
+                border: 1px solid #ddd;
+            }
+            
+            .contact-info {
+                background: white !important;
+                color: black !important;
+                border: 1px solid #ddd;
+            }
         }
 
         .content-section {
-            display: none;
+            display: block;
             background: white;
             border-radius: 20px;
             padding: 40px;
             margin-bottom: 30px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             animation: slideIn 0.5s ease-out;
-        }
-
-        .content-section.active {
-            display: block;
+            page-break-inside: avoid;
         }
 
         .section-title {
@@ -426,23 +432,64 @@
         }
 
         @media (max-width: 768px) {
-            .nav-tabs {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .tab-button {
-                margin: 5px;
-                font-size: 0.9rem;
-                padding: 12px 20px;
+            .container {
+                padding: 10px;
             }
             
             .header h1 {
                 font-size: 2rem;
             }
             
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .content-section {
+                padding: 20px;
+                margin-bottom: 20px;
+                border-radius: 15px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .vision-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .vision-card {
+                padding: 20px;
+            }
+            
+            .vision-card h3 {
+                font-size: 1.5rem;
+            }
+            
+            .offering-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
             .stats-container {
                 flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .timeline-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .timeline-number {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .contact-info > div {
+                flex-direction: column !important;
                 gap: 20px;
             }
         }
@@ -477,30 +524,24 @@
             <div class="logout-button" onclick="logout()">🚪 Log ud</div>
         </div>
 
-        <div class="nav-tabs">
-            <button class="tab-button active" onclick="showTab('vision')">Vision</button>
-            <button class="tab-button" onclick="showTab('maal')">Mål</button>
-            <button class="tab-button" onclick="showTab('tilbud')">Hvad vi tilbyder</button>
-            <button class="tab-button" onclick="showTab('aspekter')">Vigtige Aspekter</button>
-            <button class="tab-button" onclick="showTab('kontakt')">Kontakt</button>
-        </div>
 
-        <div id="vision" class="content-section active">
+
+        <div id="vision" class="content-section">
             <h2 class="section-title">Vores Vision</h2>
             <div class="vision-grid">
-                <div class="vision-card" onclick="highlightCard(this)">
+                <div class="vision-card">
                     <h3>🤝 Partnerskab</h3>
                     <p>Tre dedikerede kirurger med komplementerende ekspertiser - Jonathan og Martin som partnere</p>
                 </div>
-                <div class="vision-card" onclick="highlightCard(this)">
+                <div class="vision-card">
                     <h3>🚀 Innovation og patienttilfredshed</h3>
                     <p>Fokus på innovation, effektivitet og patientoplevelse. Vi skal have det bedste renommé, både fagligt og hos patienterne.</p>
                 </div>
-                <div class="vision-card" onclick="highlightCard(this)">
+                <div class="vision-card">
                     <h3>🌍 International Frontløber</h3>
                     <p>Positionere Åreknudeklinikken som national og international frontløber inden for åreknudebehandling</p>
                 </div>
-                <div class="vision-card" onclick="highlightCard(this)">
+                <div class="vision-card">
                     <h3>💪 Synergieffekter</h3>
                     <p>Udnytte de unikke styrker fra tre specialister til at skabe markedets stærkeste team</p>
                 </div>
@@ -700,21 +741,6 @@
         });
 
         // Rest of the existing JavaScript functions...
-        function showTab(tabName) {
-            // Hide all sections
-            const sections = document.querySelectorAll('.content-section');
-            sections.forEach(section => section.classList.remove('active'));
-            
-            // Remove active class from all buttons
-            const buttons = document.querySelectorAll('.tab-button');
-            buttons.forEach(button => button.classList.remove('active'));
-            
-            // Show selected section
-            document.getElementById(tabName).classList.add('active');
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
-        }
 
         function highlightCard(card) {
             // Remove highlight from all cards
