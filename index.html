@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samarbejdsforslag - Åreknudeklinikken</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Login Screen Styles */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .login-header h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 18px 25px;
+            border: 2px solid #e1e5e9;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .input-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 1rem;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        .login-hint {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .login-hint p {
+            color: #667eea;
+            font-size: 0.95rem;
+            margin: 0;
+            font-style: italic;
+        }
+
+        .logout-button {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-size: 0.9rem;
+        }
+
+        .logout-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50px;
+            padding: 5px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-button {
+            background: transparent;
+            border: none;
+            padding: 15px 30px;
+            color: white;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            margin: 0 5px;
+        }
+
+        .tab-button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .vision-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .vision-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .vision-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .vision-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .vision-card p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .goal-timeline {
+            position: relative;
+            margin: 40px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .timeline-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-right: 30px;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .timeline-content h4 {
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .offering-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .offering-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-top: 4px solid #667eea;
+        }
+
+        .offering-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .offering-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 40px 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 15px;
+            padding: 30px;
+            color: white;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .contact-info h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .contact-details {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .interactive-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .interactive-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .tab-button {
+                margin: 5px;
+                font-size: 0.9rem;
+                padding: 12px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>🏥 Åreknudeklinikken</h1>
+                <p>Adgangskode påkrævet</p>
+            </div>
+            <div class="login-form">
+                <div class="input-group">
+                    <input type="password" id="passwordInput" placeholder="Indtast adgangskode" maxlength="20">
+                    <button onclick="checkPassword()" class="login-button">Få Adgang</button>
+                </div>
+                <div id="errorMessage" class="error-message"></div>
+                <div class="login-hint">
+                    <p>💡 Hint: Tænk på antal klinikker i vores 2-års plan</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content (initially hidden) -->
+    <div id="mainContent" class="container" style="display: none;">
+        <div class="header">
+            <h1>Samarbejdsforslag</h1>
+            <p>Åreknudeklinikken - En Vision for Fremtiden</p>
+            <div class="logout-button" onclick="logout()">🚪 Log ud</div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="tab-button active" onclick="showTab('vision')">Vision</button>
+            <button class="tab-button" onclick="showTab('maal')">Mål</button>
+            <button class="tab-button" onclick="showTab('tilbud')">Hvad vi tilbyder</button>
+            <button class="tab-button" onclick="showTab('aspekter')">Vigtige Aspekter</button>
+            <button class="tab-button" onclick="showTab('kontakt')">Kontakt</button>
+        </div>
+
+        <div id="vision" class="content-section active">
+            <h2 class="section-title">Vores Vision</h2>
+            <div class="vision-grid">
+                <div class="vision-card" onclick="highlightCard(this)">
+                    <h3>🤝 Partnerskab</h3>
+                    <p>Tre dedikerede kirurger med komplementerende ekspertiser - Jonathan og Martin som partnere</p>
+                </div>
+                <div class="vision-card" onclick="highlightCard(this)">
+                    <h3>🚀 Innovation og patienttilfredshed</h3>
+                    <p>Fokus på innovation, effektivitet og patientoplevelse. Vi skal have det bedste renommé, både fagligt og hos patienterne.</p>
+                </div>
+                <div class="vision-card" onclick="highlightCard(this)">
+                    <h3>🌍 International Frontløber</h3>
+                    <p>Positionere Åreknudeklinikken som national og international frontløber inden for åreknudebehandling</p>
+                </div>
+                <div class="vision-card" onclick="highlightCard(this)">
+                    <h3>💪 Synergieffekter</h3>
+                    <p>Udnytte de unikke styrker fra tre specialister til at skabe markedets stærkeste team</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="maal" class="content-section">
+            <h2 class="section-title">Mål for de Næste 2-5 År</h2>
+            <div style="background: #f8f9fa; padding: 30px; border-radius: 15px; margin-bottom: 30px; border-left: 4px solid #667eea;">
+                <p style="font-size: 1.2rem; line-height: 1.7; margin-bottom: 20px;">
+                    Vores mål er, at Åreknudeklinikken i løbet af de næste 2-5 år udvikler sig til en virksomhed med 3-5 afdelinger i Danmark. Vi skal have landets bedste renommé og være kendt for glade og tilfredse patienter og en høj og seriøs faglighed. 
+                    Denne ambition skal realiseres gennem <strong>effektiv vækst</strong>, <strong>kompromisløst fokus på patientoplevelse</strong> 
+                    og ved at udnytte de synergieffekter, vi tre kirurger kan skabe sammen.
+                </p>
+            </div>
+            <div class="goal-timeline">
+                <div class="timeline-item">
+                    <div class="timeline-number">5</div>
+                    <div class="timeline-content">
+                        <h4>Fem Afdelinger i Danmark</h4>
+                        <p>Udvikle Åreknudeklinikken til en klinikgruppe med fem afdelinger gennem seriøs faglig tilgang, effektiv forretningsføring og et udtalt fokus på patientoplevelse</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-number">⭐</div>
+                    <div class="timeline-content">
+                        <h4>Højeste Patienttilfredshed</h4>
+                        <p>Være kendt for den højeste patienttilfredshed i branchen. Patienter skal komme til os fordi de får den bedste oplevelse og behandling i branchen.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-number">🏆</div>
+                    <div class="timeline-content">
+                        <h4>Bedste Renommé</h4>
+                        <p>Opnå det bedste renommé både blandt patienter og i faglige kredse</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-number">💎</div>
+                    <div class="timeline-content">
+                        <h4>Ny Standard</h4>
+                        <p>Sætte en ny standard for kvalitet, effektivitet og patientoplevelse inden for åreknudebehandling</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tilbud" class="content-section">
+            <h2 class="section-title">Hvad Vi Kan Tilbyde</h2>
+            <div style="background: #f8f9fa; padding: 40px; border-radius: 15px; border-left: 6px solid #667eea;">
+                <ul style="font-size: 1.1rem; line-height: 1.8; list-style: none; padding-left: 0; margin-bottom: 30px;">
+                    <li style="margin-bottom: 25px; padding: 25px; background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-left: 4px solid #667eea;">
+                        <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.5rem;">📊 Optimering af Klinikprocesser</h3>
+                        <p>Baseret på vores erfaring med arbejde på tværs af mange klinikker har vi udviklet et skarpt øje for klinikoptimering. 
+                        Vi kan reducere omkostningen pr. behandling med <strong>op til 50%</strong> ift. konkurrenter gennem strømlining af diagnostik, behandling og opfølgning. 
+                        Vores tilgang er at være <strong>lean og effektiv uden at gå på kompromis med resultat</strong> - denne effektivisering giver en 
+                        <strong>ekstrem konkurrencefordel</strong> og kan understøtte hurtig vækst.</p>
+                    </li>
+                    <li style="margin-bottom: 25px; padding: 25px; background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-left: 4px solid #667eea;">
+                        <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.5rem;">💝 Skånsomme Behandlinger</h3>
+                        <p>Vi har specialiseret os i <strong>minimalt invasive metoder</strong>, som giver skånsomme forløb og optimale resultater. En unik kompetence er evnen til at tilpasse behandling og forløb til patientens behov, på en måde der gør det muligt at behandle patienter så de føler sig trygge og sikre, modsat hvad de ville møde andre steder. 
+                        Dette afspejles i en aktuel TrustScore på 4,7/5 baseret på 168 anmeldelser, med ros for professionalisme, tydelig kommunikation og høj patientfokus. 
+                        Den <strong>dokumenterede patienttilfredshed</strong> er en unik konkurrencefordel, der skaber loyalitet og tiltrækker nye patienter.</p>
+                    </li>
+                    <li style="margin-bottom: 25px; padding: 25px; background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-left: 4px solid #667eea;">
+                        <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.5rem;">🌐 Styrket Digital Tilstedeværelse</h3>
+                        <p>Vi vil øge klinikkens synlighed gennem patientcases og forskning, både på sociale medier og i faglige kredse. 
+                        Det vil <strong>styrke klinikkens brand</strong> og sikre en stabil og stigende patientstrøm.</p>
+                    </li>
+                    <li style="margin-bottom: 25px; padding: 25px; background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-left: 4px solid #667eea;">
+                        <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.5rem;">⚡ Arbejdsomhed og Dedikation</h3>
+                        <p>Vi bringer en stærk arbejdsmoral og dedikation til teamet. Vores tilgang er at arbejde smart og målrettet for at opnå de bedste resultater. 
+                        Vi tror på, at <strong>hård arbejde kombineret med effektive processer</strong> er nøglen til at skabe en succesfuld og voksende klinikgruppe.</p>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-item">
+                    <span class="stat-number">4.7</span>
+                    <span class="stat-label">TrustScore / 5</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">Høj</span>
+                    <span class="stat-label">faglighed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">50%</span>
+                    <span class="stat-label">Omkostningsreduktion</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="aspekter" class="content-section">
+            <h2 class="section-title">Vigtige Aspekter for Samarbejdet</h2>
+            <div style="background: #f8f9fa; padding: 40px; border-radius: 15px; border-left: 6px solid #667eea;">
+                <h3 style="color: #667eea; margin-bottom: 25px; font-size: 1.8rem;">Grundlag for Succes</h3>
+                <p style="font-size: 1.2rem; margin-bottom: 25px; line-height: 1.7;">
+                    Et succesfuldt partnerskab skal bygge på <strong>gensidig sparring og ligeværdig beslutningstagning</strong>. 
+                    Strukturen skal understøtte et <strong>dynamisk miljø</strong>, hvor alle parters erfaring og ekspertise 
+                    bringes i spil gennem åben dialog og fælles mål.
+                </p>
+                <ul style="font-size: 1.1rem; line-height: 1.8; list-style: none; padding-left: 0; margin-bottom: 30px;">
+                    <li style="margin-bottom: 15px; padding-left: 30px; position: relative;">
+                        <span style="position: absolute; left: 0; color: #667eea; font-weight: bold;">✓</span>
+                        Gensidig sparring og ligeværdig beslutningstagning
+                    </li>
+                    <li style="margin-bottom: 15px; padding-left: 30px; position: relative;">
+                        <span style="position: absolute; left: 0; color: #667eea; font-weight: bold;">✓</span>
+                        Dynamisk miljø med åben dialog og fælles vision
+                    </li>
+                    <li style="margin-bottom: 15px; padding-left: 30px; position: relative;">
+                        <span style="position: absolute; left: 0; color: #667eea; font-weight: bold;">✓</span>
+                        Udnyttelse af alle parters erfaring og ekspertise
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="kontakt" class="content-section">
+            <h2 class="section-title">Lad Os Tale Sammen</h2>
+            <div class="contact-info">
+                <h3>Jonathan & Martin</h3>
+                <div style="display: flex; justify-content: space-around; margin: 30px 0;">
+                    <div style="text-align: center;">
+                        <h4 style="color: white; margin-bottom: 10px;">Jonathan Lawaetz</h4>
+                        <div class="contact-details">📧 jonathandk99@yahoo.dk</div>
+                        <div class="contact-details">📞 +45 22 17 87 16</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <h4 style="color: white; margin-bottom: 10px;">Martin Lawaetz</h4>
+                        <div class="contact-details">📧 martin@venespecialisten.dk</div>
+                        <div class="contact-details">📞 +45 31 54 08 85</div>
+                    </div>
+                </div>
+                <p style="margin-top: 30px; font-size: 1.1rem; opacity: 0.9;">
+                    "Vi ser dette som en mulighed for at skabe klinikker, der leverer verdens bedste patientoplevelse, 
+                    får det stærkeste renommé i Danmark og samtidig kan vækste betydeligt til 3-5 klinikker inden for de næste 2-5 år."
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Login functionality
+        const correctPassword = "klinik5"; // Password: klinik5 (5 klinikker i planen)
+        
+        function checkPassword() {
+            const input = document.getElementById('passwordInput');
+            const errorDiv = document.getElementById('errorMessage');
+            const enteredPassword = input.value.toLowerCase().trim();
+            
+            if (enteredPassword === correctPassword) {
+                // Correct password - show main content
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                
+                // Store login state
+                sessionStorage.setItem('authenticated', 'true');
+                
+                // Clear any error messages
+                errorDiv.textContent = '';
+                input.value = '';
+            } else {
+                // Wrong password - show error
+                errorDiv.textContent = '❌ Forkert adgangskode. Prøv igen.';
+                input.value = '';
+                
+                // Add shake animation to login container
+                const loginContainer = document.querySelector('.login-container');
+                loginContainer.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    loginContainer.style.animation = '';
+                }, 500);
+            }
+        }
+        
+        function logout() {
+            sessionStorage.removeItem('authenticated');
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('mainContent').style.display = 'none';
+        }
+        
+        // Check if user is already authenticated on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (sessionStorage.getItem('authenticated') === 'true') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            }
+            
+            // Allow Enter key to submit password
+            document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkPassword();
+                }
+            });
+        });
+
+        // Rest of the existing JavaScript functions...
+        function showTab(tabName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        function highlightCard(card) {
+            // Remove highlight from all cards
+            const cards = document.querySelectorAll('.vision-card');
+            cards.forEach(c => c.style.transform = 'translateY(0)');
+            
+            // Highlight clicked card
+            card.style.transform = 'translateY(-10px) scale(1.05)';
+            
+            setTimeout(() => {
+                card.style.transform = 'translateY(0) scale(1)';
+            }, 2000);
+        }
+
+        function showMessage() {
+            alert('Sammen kan vi skabe Danmarks førende klinikgruppe inden for åreknudebehandling! 🚀');
+        }
+
+        // Add some interactive animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.offering-card, .vision-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                    }
+                });
+            });
+            
+            cards.forEach(card => {
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
